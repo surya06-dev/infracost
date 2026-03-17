@@ -1,9 +1,50 @@
+# name: Infracost Scan
+
+# on:
+#   pull_request:
+
+# permissions:
+#   contents: read
+#   pull-requests: write
+
+# jobs:
+#   infracost:
+#     runs-on: ubuntu-latest
+#     name: infracost scan
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Setup Infracost
+#         uses: infracost/actions/setup@v3  
+#         with:
+#           api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+#       - name: Generate Infracost cost estimate
+#         run: |
+#           infracost breakdown --path=./terraform \
+#             --format=json \
+#             --out-file=/tmp/infracost.json
+
+#       - name: Upload to Infracost Cloud
+#         run: |
+#           echo "📤 Uploading data to Infracost Cloud..."
+#           infracost upload --path=/tmp/infracost.json
+#           echo "✅ Upload complete! View at: https://dashboard.infracost.io"
+
+#       - name: Post PR comment
+#         run: |
+#           infracost comment github \
+#             --path=/tmp/infracost.json \
+#             --repo=$GITHUB_REPOSITORY \
+#             --github-token=${{ github.token }} \
+#             --pull-request=${{ github.event.pull_request.number }}
+
+
 name: Infracost Scan
 
 on:
   pull_request:
-    branches: [ main, master ]
-    types: [ opened, synchronize, reopened ]
 
 permissions:
   contents: read
