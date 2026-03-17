@@ -45,7 +45,7 @@ resource "aws_db_instance" "mysql_57_test" {
   engine_version = "5.7"  # EXACT match
   instance_class = "db.t3.micro"
   
-  allocated_storage     = 20
+  allocated_storage     = 120
   storage_type         = "gp3"
   storage_encrypted    = true
   
