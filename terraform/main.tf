@@ -13,9 +13,9 @@ provider "aws" {
   region = var.aws_region
 }
 
-# MySQL 5.7 Production Instance
-resource "aws_db_instance" "mysql_57_prod" {
-  identifier     = "mysql-57-prod"
+# MySQL 5.7 test Instance
+resource "aws_db_instance" "mysql_57" {
+  identifier     = "mysql-57"
   engine         = "mysql"
   engine_version = "5.7.44"  # This triggers Infracost warning
   instance_class = "db.t3.small"
@@ -24,14 +24,14 @@ resource "aws_db_instance" "mysql_57_prod" {
   storage_type         = "gp3"
   storage_encrypted    = true
   
-  db_name  = "production"
+  db_name  = "test"
   username = "admin"
   password = var.db_password
   
   skip_final_snapshot = true
   
   tags = {
-    Name        = "mysql-57-production"
-    Environment = "production"
+    Name        = "mysql-57"
+    Environment = "test"
   }
 }
