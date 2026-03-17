@@ -25,6 +25,12 @@ jobs:
           infracost breakdown --path=./terraform \
             --format=json \
             --out-file=/tmp/infracost.json
+  
+      - name: Debug JSON for policies
+        run: |
+          echo "Checking for policy data in JSON..."
+          cat /tmp/infracost.json | jq '.governance_checks' || echo "No governance_checks found"
+          cat /tmp/infracost.json | jq '.projects[].breakdown.governance_checks' || echo "No breakdown governance_checks found"
 
       - name: Upload to Infracost Cloud
         run: |
@@ -40,9 +46,7 @@ jobs:
             --github-token=${{ github.token }} \
             --pull-request=${{ github.event.pull_request.number }} \
             --behavior=update
+            --policy-path=/dev/null \
+            --format=table
         
-      - name: Debug JSON for policies
-        run: |
-          echo "Checking for policy data in JSON..."
-          cat /tmp/infracost.json | jq '.governance_checks' || echo "No governance_checks found"
-          cat /tmp/infracost.json | jq '.projects[].breakdown.governance_checks' || echo "No breakdown governance_checks found"
+

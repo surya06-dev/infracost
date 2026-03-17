@@ -10,28 +10,53 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = "us-east-1"
 }
 
-# MySQL 5.7 test Instance
-resource "aws_db_instance" "mysql_57" {
-  identifier     = "mysql-57"
+# This will DEFINITELY trigger MySQL 5.7 policy
+resource "aws_db_instance" "mysql_57_trigger" {
+  identifier     = "mysql-57-trigger"
   engine         = "mysql"
-  engine_version = "5.7.44"  # This triggers Infracost warning
-  instance_class = "db.t3.small"
+  engine_version = "5.7"  # EXACT match - not 5.7.44
+  instance_class = "db.t3.micro"
   
-  allocated_storage     = 100
+  allocated_storage     = 20
   storage_type         = "gp3"
   storage_encrypted    = true
   
-  db_name  = "test"
+  db_name  = "testdb"
   username = "admin"
-  password = var.db_password
+  password = "TestPassword123!"  # Simple password for testing
+  
+  # CRITICAL: These tags ensure it's NOT filtered out
+  tags = {
+    Name        = "mysql-57-trigger"
+    Environment = "development"  # Must be non-production
+    ManagedBy   = "terraform"
+  }
   
   skip_final_snapshot = true
+}
+
+# Backup instance with different naming
+resource "aws_db_instance" "mysql_57_test" {
+  identifier     = "mysql-57-test"
+  engine         = "mysql"
+  engine_version = "5.7"  # EXACT match
+  instance_class = "db.t3.micro"
+  
+  allocated_storage     = 20
+  storage_type         = "gp3"
+  storage_encrypted    = true
+  
+  db_name  = "testdb2"
+  username = "admin"
+  password = "TestPassword123!"
   
   tags = {
-    Name        = "mysql-57"
-    Environment = "test"
+    Name        = "mysql-57-test"
+    Environment = "test"  # Non-production
   }
+  
+  skip_final_snapshot = true
 }
