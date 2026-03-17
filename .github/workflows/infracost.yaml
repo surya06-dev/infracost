@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "📤 Uploading data to Infracost Cloud..."
           infracost upload --path=/tmp/infracost.json
-          echo "✅ Upload complete! View at: https://dashboard.infracost.io
+          echo "✅ Upload complete! View at: https://dashboard.infracost.io"
           
       - name: Post PR comment
         run: |
