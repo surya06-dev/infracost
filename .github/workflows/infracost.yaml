@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Infracost
-        uses: infracost/actions/setup@v2  
+        uses: infracost/actions/setup@v3  
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
@@ -34,9 +34,10 @@ jobs:
           infracost upload --path=/tmp/infracost.json
           echo "✅ Upload complete! View at: https://dashboard.infracost.io"
 
-      - name: Post comment on PR
-        uses: infracost/actions/comment@v2  
-        with:
-          path: /tmp/infracost.json
-          behavior: update
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Post PR comment
+        run: |
+          infracost comment github \
+            --path=infracost.json \
+            --repo=$GITHUB_REPOSITORY \
+            --github-token=${{ github.token }} \
+            --pull-request=${{ github.event.pull_request.number }}
