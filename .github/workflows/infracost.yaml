@@ -30,13 +30,13 @@ jobs:
         run: |
           echo "📤 Uploading data to Infracost Cloud..."
           infracost upload --path=/tmp/infracost.json
-          echo "✅ Upload complete! View at: https://dashboard.infracost.io"
-
+          echo "✅ Upload complete! View at: https://dashboard.infracost.io
+          
       - name: Post PR comment
         run: |
           infracost comment github \
             --path=/tmp/infracost.json \
-            --behavior update
-            --repo=$GITHUB_REPOSITORY \
-            --token=${{ github.token }} \
-            --pull-request=${{ github.event.pull_request.number }}
+            --repo=${{ github.repository }} \
+            --github-token=${{ github.token }} \
+            --pull-request=${{ github.event.pull_request.number }} \
+            --behavior=update
