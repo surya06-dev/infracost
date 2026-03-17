@@ -2,8 +2,6 @@ name: Infracost Scan
 
 on:
   pull_request:
-    branches: [ main, master ]
-    types: [ opened, synchronize, reopened ]
 
 permissions:
   contents: read
@@ -27,17 +25,27 @@ jobs:
           infracost breakdown --path=./terraform \
             --format=json \
             --out-file=/tmp/infracost.json
+  
+      - name: Debug JSON for policies
+        run: |
+          echo "Checking for policy data in JSON..."
+          cat /tmp/infracost.json | jq '.governance_checks' || echo "No governance_checks found"
+          cat /tmp/infracost.json | jq '.projects[].breakdown.governance_checks' || echo "No breakdown governance_checks found"
 
       - name: Upload to Infracost Cloud
         run: |
           echo "📤 Uploading data to Infracost Cloud..."
           infracost upload --path=/tmp/infracost.json
           echo "✅ Upload complete! View at: https://dashboard.infracost.io"
-
+          
       - name: Post PR comment
         run: |
           infracost comment github \
             --path=/tmp/infracost.json \
-            --repo=$GITHUB_REPOSITORY \
+            --repo=${{ github.repository }} \
             --github-token=${{ github.token }} \
-            --pull-request=${{ github.event.pull_request.number }}
+            --pull-request=${{ github.event.pull_request.number }} \
+            --behavior=update \
+            --format=json
+        
+
